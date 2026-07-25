@@ -25,7 +25,7 @@
 | 快手 | — | ✅ | — | — | ✅ | ✅ |
 | 微博 | — | ✅ | — | — | ✅ | ✅ |
 | 贴吧 | — | ✅ | — | — | ✅ | ✅ |
-| 视频号 | — | — | — | — | ✅ | — |
+| 视频号 | — | ✅ | — | — | ✅ | ✅ |
 | Twitter/X | ✅ | — | — | — | — | — |
 | Reddit | ✅ | — | — | — | — | — |
 | YouTube | ✅ | — | — | — | — | — |
@@ -132,6 +132,12 @@ info-collector/
 ## 使用示例
 
 ```bash
+# 单条视频号采集 + 飞书 + Obsidian
+python scripts/sph_to_feishu.py AH9KmByTvv --to-obsidian
+
+# 批量视频号采集
+python scripts/sph_to_feishu.py --batch ID1 ID2 ID3 --to-obsidian
+
 # 抖音账号全部视频抓取
 python scripts/douyin_account_videos.py "https://www.douyin.com/user/XXX" -o videos.json
 python scripts/sync_to_obsidian.py videos.json -p douyin

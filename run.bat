@@ -174,8 +174,19 @@ echo   Zhihu - Keyword search + collect
 echo ============================================
 echo.
 echo NOTE: First time needs QR code login.
-echo Make sure Chrome remote debugging is enabled.
 echo.
+
+REM Auto-start Chrome CDP if not running
+netstat -ano 2^>nul ^| findstr /C:"LISTENING" ^| findstr /C:":9222 " >nul 2>&1
+if %errorlevel% neq 0 (
+    echo Chrome CDP not running. Starting Chrome in debug mode...
+    echo Close any existing Chrome windows first.
+    taskkill /f /im chrome.exe >nul 2>&1
+    timeout /t 2 /nobreak >nul
+    start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222
+    echo Chrome started. If it asks to "Allow remote debugging", click OK.
+    timeout /t 3 /nobreak >nul
+)
 
 where uv >nul 2>&1
 if %errorlevel% neq 0 (
@@ -198,7 +209,7 @@ if "%zh_n%"=="" set zh_n=20
 echo.
 echo Starting MediaCrawler (QR code will pop up, scan with Zhihu app)...
 cd media-crawler
-uv run main.py --platform zhihu --lt qrcode --type search --keywords "%zh_kw%" --max_notes_count %zh_n% --save_data_option jsonl
+uv run main.py --platform zhihu --lt qrcode --type search --keywords "%zh_kw%" --crawler_max_notes_count %zh_n% --save_data_option jsonl
 cd ..
 
 echo.
@@ -223,8 +234,19 @@ echo   Xiaohongshu - Keyword search + collect
 echo ============================================
 echo.
 echo NOTE: First time needs QR code login.
-echo Make sure Chrome remote debugging is enabled.
 echo.
+
+REM Auto-start Chrome CDP if not running
+netstat -ano 2^>nul ^| findstr /C:"LISTENING" ^| findstr /C:":9222 " >nul 2>&1
+if %errorlevel% neq 0 (
+    echo Chrome CDP not running. Starting Chrome in debug mode...
+    echo Close any existing Chrome windows first.
+    taskkill /f /im chrome.exe >nul 2>&1
+    timeout /t 2 /nobreak >nul
+    start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222
+    echo Chrome started. If it asks to "Allow remote debugging", click OK.
+    timeout /t 3 /nobreak >nul
+)
 
 where uv >nul 2>&1
 if %errorlevel% neq 0 (
@@ -247,7 +269,7 @@ if "%xhs_n%"=="" set xhs_n=20
 echo.
 echo Starting MediaCrawler (QR code will pop up, scan with XHS app)...
 cd media-crawler
-uv run main.py --platform xhs --lt qrcode --type search --keywords "%xhs_kw%" --max_notes_count %xhs_n% --save_data_option jsonl
+uv run main.py --platform xhs --lt qrcode --type search --keywords "%xhs_kw%" --crawler_max_notes_count %xhs_n% --save_data_option jsonl
 cd ..
 
 echo.

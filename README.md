@@ -2,6 +2,8 @@
 
 **三合一全平台内容采集工作台** — 搜索 · 采集 · 转录 · 入库，一条命令完成。
 
+> 基于 [agent-reach](https://github.com/Panniantong/Agent-Reach)（搜索路由器）和 [MediaCrawler](https://github.com/NanmiCoder/MediaCrawler)（采集引擎）构建上层工作台，补齐转录、飞书入库、Obsidian 归档三大能力。
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
 [![Node.js 16+](https://img.shields.io/badge/Node.js-16+-green.svg)](https://nodejs.org/)

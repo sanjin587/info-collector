@@ -1,20 +1,24 @@
 # 信息采集官工具包 - Python 依赖
 
-# === 爬虫 ===
+# === 浏览器自动化 ===
 playwright>=1.40.0
 
-# === 飞书 API ===
+# === 飞书 API + HTTP ===
 requests>=2.31.0
+
+# === 环境变量加载 ===
+python-dotenv>=1.0.0
 
 # === 日志 ===
 loguru>=0.7.2
 
-# === 音视频转写（按需安装） ===
+# === 音视频转写 ===
 # Paraformer 引擎（百炼在线，需 DASHSCOPE_API_KEY）
 dashscope>=1.20.0
 
 # Whisper 引擎（本地离线）
-# faster-whisper>=1.0.0
+faster-whisper>=1.0.0
+openai-whisper>=20240930
 
 # === 抖音兜底方案 ===
 yt-dlp>=2024.0.0

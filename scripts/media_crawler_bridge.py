@@ -188,12 +188,17 @@ def convert_to_standard(records: list[dict], platform: str, account_url: str = "
             continue
         seen_urls.add(url)
 
+        # Preserve the generic field names expected by the Feishu synchronizer.
+        likes = record.get("voteup_count", 0) or record.get("like_count", 0) or record.get("liked_count", 0)
+        comments = record.get("comment_count", 0)
         video = {
             "videoUrl": url,
             "noteId": record.get("note_id", ""),
             "title": record.get(title_field, ""),
-            "likes": record.get("voteup_count", 0) or record.get("like_count", 0) or record.get("liked_count", 0),
-            "comments": record.get("comment_count", 0),
+            "likeCount": likes,
+            "commentCount": comments,
+            "likes": likes,
+            "comments": comments,
             "publishTime": _format_time(record.get("created_time", 0) or record.get("create_time", 0)),
         }
 

@@ -3,6 +3,9 @@ chcp 65001 >nul
 title 信息采集官 一键安装
 color 0A
 
+REM 添加 uv 路径
+set "PATH=%USERPROFILE%\.local\bin;%PATH%"
+
 echo.
 echo ╔══════════════════════════════════════════════╗
 echo ║     🕵️  信息采集官 一键安装                   ║

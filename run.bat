@@ -3,6 +3,9 @@ chcp 65001 >nul
 title 信息采集官工具包
 color 0B
 
+REM 添加 uv 路径
+set "PATH=%USERPROFILE%\.local\bin;%PATH%"
+
 :menu
 cls
 echo ╔══════════════════════════════════════════╗
@@ -201,7 +204,6 @@ if "%zh_n%"=="" set zh_n=20
 
 echo.
 echo 正在启动 MediaCrawler 采集（会弹出二维码，用知乎APP扫码登录）...
-set "PATH=%USERPROFILE%\.local\bin;%PATH%"
 cd media-crawler
 uv run main.py --platform zhihu --lt qrcode --type search --keywords "%zh_kw%" --max_notes_count %zh_n% --save_data_option jsonl
 cd ..
@@ -251,7 +253,6 @@ if "%xhs_n%"=="" set xhs_n=20
 
 echo.
 echo 正在启动 MediaCrawler 采集（会弹出二维码，用小红书APP扫码登录）...
-set "PATH=%USERPROFILE%\.local\bin;%PATH%"
 cd media-crawler
 uv run main.py --platform xhs --lt qrcode --type search --keywords "%xhs_kw%" --max_notes_count %xhs_n% --save_data_option jsonl
 cd ..

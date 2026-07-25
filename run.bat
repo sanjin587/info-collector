@@ -177,6 +177,7 @@ echo NOTE: First time needs QR code login.
 echo.
 
 REM Auto-start Chrome CDP if not running
+:check_cdp
 netstat -ano 2^>nul ^| findstr /C:"LISTENING" ^| findstr /C:":9222 " >nul 2>&1
 if %errorlevel% neq 0 (
     echo.
@@ -185,22 +186,22 @@ if %errorlevel% neq 0 (
     echo   I'll start it for you now.
     echo ========================================
     echo.
-    echo Close all Chrome windows first...
     taskkill /f /im chrome.exe >nul 2>&1
     timeout /t 2 /nobreak >nul
-
     start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222
     echo Chrome started.
     echo.
     echo NOW DO THIS:
     echo   1. In Chrome, go to: chrome://inspect/#remote-debugging
     echo   2. Turn ON: Allow remote debugging for this browser instance
+    echo   3. Come back here and press any key
     echo.
     pause
-) else (
-    echo Chrome CDP is running on port 9222 - OK.
-    echo.
+    goto check_cdp
 )
+
+echo Chrome CDP is running on port 9222 - OK.
+echo.
 
 where uv >nul 2>&1
 if %errorlevel% neq 0 (
@@ -251,6 +252,7 @@ echo NOTE: First time needs QR code login.
 echo.
 
 REM Auto-start Chrome CDP if not running
+:check_cdp
 netstat -ano 2^>nul ^| findstr /C:"LISTENING" ^| findstr /C:":9222 " >nul 2>&1
 if %errorlevel% neq 0 (
     echo.
@@ -259,22 +261,22 @@ if %errorlevel% neq 0 (
     echo   I'll start it for you now.
     echo ========================================
     echo.
-    echo Close all Chrome windows first...
     taskkill /f /im chrome.exe >nul 2>&1
     timeout /t 2 /nobreak >nul
-
     start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222
     echo Chrome started.
     echo.
     echo NOW DO THIS:
     echo   1. In Chrome, go to: chrome://inspect/#remote-debugging
     echo   2. Turn ON: Allow remote debugging for this browser instance
+    echo   3. Come back here and press any key
     echo.
     pause
-) else (
-    echo Chrome CDP is running on port 9222 - OK.
-    echo.
+    goto check_cdp
 )
+
+echo Chrome CDP is running on port 9222 - OK.
+echo.
 
 where uv >nul 2>&1
 if %errorlevel% neq 0 (

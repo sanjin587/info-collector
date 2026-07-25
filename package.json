@@ -1,0 +1,12 @@
+{
+  "name": "info-collector-tools",
+  "version": "1.0.0",
+  "description": "信息采集官 - 飞书数据同步工具",
+  "scripts": {
+    "sync-feishu": "node scripts/sync-to-feishu.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "node-fetch": "^2.7.0"
+  }
+}

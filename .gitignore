@@ -1,0 +1,39 @@
+# 凭据文件 — 绝对不要提交
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+*.whl
+
+# Node.js
+node_modules/
+
+# 临时文件
+temp_*
+~temp_*
+*.mp4
+*.wav
+*.mp3
+/outputs/
+
+# 日志
+logs/
+*.log
+
+# MediaCrawler — 用 uv sync 安装，不提交
+media-crawler/
+
+# IDE
+.vscode/
+.idea/
+
+# 数据输出
+videos.json
+*_output.json
+Data/
+
+# 飞书 token 缓存
+.token_cache

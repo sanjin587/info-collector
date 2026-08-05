@@ -33,7 +33,32 @@ media-crawler/
 # 数据输出
 videos.json
 *_output.json
+outputs/
 Data/
+
+# 采集数据（不提交视频和转录文件）
+collections/
+downloads/
+
+# pipeline 运行时数据
+pipeline/downloads/
+pipeline/video_downloads/
+pipeline/transcripts/
+pipeline/*.log
+
+# 根目录临时 JSON（已归入 outputs/）
+*.jsonl
+*_probe*.json
+*_test*.json
+ai_zhihu_*.json
+user_videos*.json
+xhs_videos*.json
+zhihu_videos*.json
+sph_output*.json
+douyin_videos*.json
+
+# GPU 自动检测缓存（每台机器不同）
+.gpu_config.json
 
 # 飞书 token 缓存
 .token_cache

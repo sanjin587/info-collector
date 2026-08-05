@@ -18,6 +18,10 @@
 
 import os, sys, argparse, json, subprocess, time
 from pathlib import Path
+
+# Force UTF-8 output on Windows to avoid GBK emoji crashes
+if sys.platform == 'win32':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 from dotenv import load_dotenv
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
@@ -152,15 +156,16 @@ def transcribe_paraformer(audio_path, lang='zh'):
 
 
 def transcribe_whisper(audio_path, model_size='base', lang=None):
-    """使用 faster-whisper 本地识别（全离线）"""
+    """使用 faster-whisper 本地识别（全离线，GPU优先）"""
     from faster_whisper import WhisperModel
 
-    # 确定计算类型 - CPU模式用 int8 加速
-    compute_type = 'int8'
+    from utils.gpu_config import get_device_config
+    device, compute_type = get_device_config()
+    device_label = "GPU" if device == "cuda" else "CPU"
 
-    print(f"🧠 [Whisper] 加载模型: {model_size}")
+    print(f"🧠 [Whisper] 加载模型: {model_size} ({device_label})")
     start = time.time()
-    model = WhisperModel(model_size, device='cpu', compute_type=compute_type)
+    model = WhisperModel(model_size, device=device, compute_type=compute_type)
     load_time = time.time() - start
     print(f"  模型加载: {load_time:.1f}s")
 

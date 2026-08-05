@@ -38,53 +38,53 @@ if sys.platform == "win32":
 
 TOOLKIT_DIR = Path(__file__).resolve().parent.parent
 MEDIA_CRAWLER_DIR = TOOLKIT_DIR / "media-crawler"
-DEFAULT_DATA_DIR = MEDIA_CRAWLER_DIR / "Data"
+DEFAULT_DATA_DIR = MEDIA_CRAWLER_DIR / "data"
 
 PLATFORM_MAP = {
     "zhihu": {
-        "data_dir": "ZhiHu",
+        "data_dir": "zhihu",
         "platform_name": "知乎",
         "url_field": "content_url",
         "title_field": "title",
         "account_url_field": None,  # 知乎内容不关联固定账号，用 source_keyword
     },
     "douyin": {
-        "data_dir": "DouYin",
+        "data_dir": "douyin",
         "platform_name": "抖音",
         "url_field": "video_url",
         "title_field": "title",
         "account_url_field": "creator_url",
     },
     "xhs": {
-        "data_dir": "XiaoHongShu",
+        "data_dir": "xhs",
         "platform_name": "小红书",
         "url_field": "note_url",
         "title_field": "title",
         "account_url_field": "creator_url",
     },
     "bilibili": {
-        "data_dir": "BiliBili",
+        "data_dir": "bilibili",
         "platform_name": "B站",
         "url_field": "video_url",
         "title_field": "title",
         "account_url_field": "creator_url",
     },
     "kuaishou": {
-        "data_dir": "KuaiShou",
+        "data_dir": "kuaishou",
         "platform_name": "快手",
         "url_field": "video_url",
         "title_field": "title",
         "account_url_field": "creator_url",
     },
     "weibo": {
-        "data_dir": "WeiBo",
+        "data_dir": "weibo",
         "platform_name": "微博",
         "url_field": "note_url",
         "title_field": "content",
         "account_url_field": "creator_url",
     },
     "tieba": {
-        "data_dir": "TieBa",
+        "data_dir": "tieba",
         "platform_name": "贴吧",
         "url_field": "note_url",
         "title_field": "title",
@@ -102,11 +102,16 @@ def find_latest_data(platform: str) -> Path | None:
         print(f"⚠️ 数据目录不存在: {data_dir}")
         return None
 
-    # 优先找 jsonl，再 json，再 csv
+    # 优先找 jsonl，再 json，再 csv（递归搜索子目录，如 jsonl/csv/ 等）
+    # 优先选 search_contents，再选其他的（排除 search_comments）
     for ext in ["jsonl", "json", "csv"]:
-        files = sorted(data_dir.glob(f"*.{ext}"), key=os.path.getmtime, reverse=True)
-        if files:
-            return files[0]
+        all_files = sorted(data_dir.glob(f"**/*.{ext}"), key=os.path.getmtime, reverse=True)
+        # 优先选内容文件而非评论文件
+        content_files = [f for f in all_files if "content" in f.stem.lower()]
+        comment_files = [f for f in all_files if "comment" in f.stem.lower()]
+        other_files = [f for f in all_files if f not in content_files and f not in comment_files]
+        for f in content_files + other_files + comment_files:
+            return f
 
     return None
 
@@ -189,8 +194,13 @@ def convert_to_standard(records: list[dict], platform: str, account_url: str = "
         seen_urls.add(url)
 
         # Preserve the generic field names expected by the Feishu synchronizer.
-        likes = record.get("voteup_count", 0) or record.get("like_count", 0) or record.get("liked_count", 0)
-        comments = record.get("comment_count", 0)
+        # 中文平台数字可能带"万"字，需解析
+        likes = _parse_number(
+            record.get("voteup_count", 0) or record.get("like_count", 0) or record.get("liked_count", 0)
+        )
+        comments = _parse_number(record.get("comment_count", 0))
+        collected = _parse_number(record.get("collected_count", 0))
+        share = _parse_number(record.get("share_count", 0))
         video = {
             "videoUrl": url,
             "noteId": record.get("note_id", ""),
@@ -199,6 +209,8 @@ def convert_to_standard(records: list[dict], platform: str, account_url: str = "
             "commentCount": comments,
             "likes": likes,
             "comments": comments,
+            "collected": collected,
+            "share": share,
             "publishTime": _format_time(record.get("created_time", 0) or record.get("create_time", 0)),
         }
 
@@ -222,17 +234,40 @@ def convert_to_standard(records: list[dict], platform: str, account_url: str = "
     }
 
 
-def _format_time(ts) -> str:
-    """将时间戳转换为可读字符串"""
+def _parse_number(value) -> int:
+    """解析中文数字字符串如 '3万', '1.3万', '2559' 为 int"""
+    if value is None:
+        return 0
+    if isinstance(value, (int, float)):
+        return int(value)
+    if isinstance(value, str):
+        value = value.strip()
+        if not value:
+            return 0
+        # "1.3万" → 13000, "3万" → 30000
+        if value.endswith("万"):
+            try:
+                return int(float(value[:-1]) * 10000)
+            except ValueError:
+                return 0
+        try:
+            return int(float(value))
+        except ValueError:
+            return 0
+    return 0
+
+
+def _format_time(ts) -> int:
+    """将时间戳统一转为毫秒级 unix timestamp（飞书日期字段需要）"""
     if not ts or ts == 0:
-        return ""
+        return 0
     try:
         ts = int(ts)
-        if ts > 10_000_000_000:  # 毫秒级
-            ts = ts // 1000
-        return datetime.fromtimestamp(ts).strftime("%Y-%m-%d %H:%M")
+        if ts < 10_000_000_000:  # 秒级
+            ts = ts * 1000
+        return ts
     except (ValueError, OSError):
-        return str(ts)
+        return 0
 
 
 def main():

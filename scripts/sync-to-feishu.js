@@ -86,11 +86,11 @@ async function findOrCreateAccount(accountUrl) {
 // ============ 查重：已有作品链接 ============
 async function fetchExistingLinks() {
   const result = await feishuApi("POST", `/bitable/v1/apps/${APP_TOKEN}/tables/${WORKS_TABLE_ID}/records/search`, {
-    field_names: ["作品链接"],
+    field_names: ["视频链接"],
     page_size: 500,
   });
   const items = result.items || [];
-  return new Set(items.map(r => r.fields["作品链接"]).filter(Boolean));
+  return new Set(items.map(r => r.fields["视频链接"]).filter(Boolean));
 }
 
 // ============ 批量写入 ============
@@ -100,7 +100,7 @@ async function batchCreateWorks(accountRecordId, videos) {
     const batch = videos.slice(i, i + BATCH_SIZE);
     const records = batch.map(v => ({
       fields: {
-        "作品链接": { link: v.videoUrl },
+        "视频链接": { link: v.videoUrl },
         "作品标题": v.title || "",
         "发布时间": v.publishTime || null,
         "播放量": v.playCount ?? null,
@@ -108,7 +108,7 @@ async function batchCreateWorks(accountRecordId, videos) {
         "评论": v.commentCount ?? null,
         "下载直链": v.downloadUrl ? { link: v.downloadUrl } : null,
         "封面图": v.coverUrl ? { link: v.coverUrl } : null,
-        "所属账号": accountRecordId,
+        "所属账号": [accountRecordId],
         "状态": "待分析",
       },
     }));

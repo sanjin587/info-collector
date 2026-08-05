@@ -23,7 +23,7 @@ logger.add(
 
 # 文件输出 - 每日轮转
 logger.add(
-    log_dir / "xhs_hunter_{time:YYYY-MM-DD}.log",
+    log_dir / "info_collector_{time:YYYY-MM-DD}.log",
     rotation="00:00",       # 每日零点轮转
     retention="30 days",    # 保留 30 天
     compression="gz",       # 压缩旧日志

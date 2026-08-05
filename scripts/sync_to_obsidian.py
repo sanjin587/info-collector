@@ -32,6 +32,19 @@ DEFAULT_OBSIDIAN_VAULT = Path("d:/知识库/知识库")
 DEFAULT_TARGET_DIR = "05_内容生产库/三金AI实验室_30天万粉作战计划/对标账号"
 
 
+def _format_ts_display(ts) -> str:
+    """毫秒级时间戳 → 可读日期字符串"""
+    if not ts:
+        return ""
+    try:
+        ts = int(ts)
+        if ts > 10_000_000_000:
+            ts = ts // 1000
+        return datetime.fromtimestamp(ts).strftime("%Y-%m-%d %H:%M")
+    except (ValueError, OSError):
+        return str(ts)
+
+
 def load_json(file_path: Path) -> dict:
     with open(file_path, "r", encoding="utf-8") as f:
         return json.load(f)
@@ -84,7 +97,7 @@ def build_metadata_table(video: dict, platform: str) -> str:
 
     pub_time = video.get("publishTime", "")
     if pub_time:
-        lines.append(f"| 发布时间 | {pub_time} |")
+        lines.append(f"| 发布时间 | {_format_ts_display(pub_time)} |")
 
     # 知乎特有
     if video.get("contentType"):

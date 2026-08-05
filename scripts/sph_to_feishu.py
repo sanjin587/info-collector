@@ -115,12 +115,22 @@ def download_sph_video(sph_id: str, output_dir: str = None) -> str | None:
             user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/125.0.0.0 Safari/537.36'
         )
 
-        # 拦截视频 URL
-        captured_urls = []
+        # 拦截视频 URL（区分封面图和视频：封面图 Content-Type 是 image/*，视频是 video/*）
+        captured_videos = []
+        captured_images = []
         def on_response(response):
             url = response.url
-            if 'finder.video.qq.com' in url and ('stodownload' in url or '.mp4' in url):
-                captured_urls.append(url)
+            if 'finder.video.qq.com' not in url:
+                return
+            content_type = response.headers.get('content-type', '')
+            if 'stodownload' in url or '.mp4' in url:
+                if 'video/' in content_type:
+                    captured_videos.append(url)
+                elif 'image/' in content_type:
+                    captured_images.append(url)
+                else:
+                    # content-type 未知时，先记下来
+                    captured_videos.append(url)
 
         page.on('response', on_response)
 
@@ -129,8 +139,10 @@ def download_sph_video(sph_id: str, output_dir: str = None) -> str | None:
 
         browser.close()
 
-        if captured_urls:
-            video_url = captured_urls[0]
+        if captured_videos:
+            video_url = captured_videos[0]
+        else:
+            print(f"  🔍 调试: 图片 {len(captured_images)} 个, 视频 0 个")
 
     if not video_url:
         print(f"  ⚠️ 未捕获到视频地址")

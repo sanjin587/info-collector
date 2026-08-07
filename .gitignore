@@ -62,3 +62,6 @@ douyin_videos*.json
 
 # 飞书 token 缓存
 .token_cache
+
+# 软著材料（仅本地保留，不上传）
+软著材料/

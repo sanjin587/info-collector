@@ -65,7 +65,8 @@ def output(result, url):
         p(f"\n🎤 逐字稿 ({len(vt)} 条):\n{'─'*40}")
         ft = []
         for seg in vt: p(f"  [{seg['t']}] {seg['text']}"); ft.append(seg["text"])
-        p(f"{'─'*40}\n\n📋 全文:\n{"".join(ft)}")
+        full_text = "".join(ft)
+        p(f"{'─'*40}\n\n📋 全文:\n{full_text}")
     elif not result["has_captions"]: p("\n💡 该视频没有自动字幕，只有文案描述。")
     p("="*55)
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")

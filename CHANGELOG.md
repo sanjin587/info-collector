@@ -4,7 +4,7 @@ All notable changes to this project will be documented here.
 
 The project follows Semantic Versioning for published releases.
 
-## [2.0.0] - Unreleased
+## [2.0.0] - 2026-09-18
 
 ### Added
 

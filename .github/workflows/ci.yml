@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    name: Python checks (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.11"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install test dependency
+        run: python -m pip install --upgrade pytest
+
+      - name: Compile Python files
+        run: python -m compileall scripts feishu utils
+
+      - name: Run unit tests
+        run: pytest -q
+
+  node:
+    name: Node checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install Node dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Syntax-check JavaScript entry points
+        run: |
+          node --check scripts/sync-to-feishu.js
+          node --check pipeline/run.js
+          node --check pipeline/feishu-auto-transcribe.js
+          node --check pipeline/feishu-link-transcribe.js

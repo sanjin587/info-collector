@@ -36,8 +36,31 @@ if sys.platform == "win32":
 TOOLKIT_DIR = Path(__file__).resolve().parent.parent
 SCRIPTS_DIR = TOOLKIT_DIR / "scripts"
 DOWNLOADS_DIR = TOOLKIT_DIR / "downloads"
-OBSIDIAN_VAULT = Path("D:/知识库/知识库")
-OBSIDIAN_TARGET = OBSIDIAN_VAULT / "05_内容生产库/三金AI实验室_30天万粉作战计划/逐字稿"
+
+# Load optional local configuration without making python-dotenv mandatory for
+# basic commands/tests.
+try:
+    from dotenv import load_dotenv
+    load_dotenv(TOOLKIT_DIR / ".env")
+except ImportError:
+    pass
+
+DEFAULT_TRANSCRIPT_DIR = TOOLKIT_DIR / "outputs" / "transcripts"
+_obsidian_output_dir = os.environ.get("OBSIDIAN_OUTPUT_DIR", "").strip()
+_obsidian_vault_path = os.environ.get("OBSIDIAN_VAULT_PATH", "").strip()
+
+if _obsidian_output_dir:
+    OBSIDIAN_TARGET = Path(_obsidian_output_dir).expanduser()
+elif _obsidian_vault_path:
+    OBSIDIAN_TARGET = (
+        Path(_obsidian_vault_path).expanduser()
+        / "05_内容生产库"
+        / "三金AI实验室_30天万粉作战计划"
+        / "逐字稿"
+    )
+else:
+    # Portable default for new contributors/users.
+    OBSIDIAN_TARGET = DEFAULT_TRANSCRIPT_DIR
 
 for d in [DOWNLOADS_DIR, OBSIDIAN_TARGET]:
     d.mkdir(parents=True, exist_ok=True)

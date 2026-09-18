@@ -1,7 +1,7 @@
 {
   "name": "info-collector-tools",
-  "version": "1.0.0",
-  "description": "信息采集官 - 飞书数据同步工具",
+  "version": "2.0.0",
+  "description": "Open-source content collection, transcription, Feishu sync, and Obsidian ingestion toolkit",
   "scripts": {
     "sync-feishu": "node scripts/sync-to-feishu.js"
   },

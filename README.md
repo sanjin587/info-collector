@@ -1,8 +1,10 @@
 # 信息采集官 🕵️
 
-**三合一全平台内容采集工作台** — 搜索 · 采集 · 转录 · 入库，一条命令完成。
+**开源内容采集与知识入库工作台** — 将搜索、采集、媒体转录和知识库归档串成可复用工作流。
 
-> 基于 [agent-reach](https://github.com/Panniantong/Agent-Reach)（搜索路由器）和 [MediaCrawler](https://github.com/NanmiCoder/MediaCrawler)（采集引擎）构建上层工作台，补齐转录、飞书入库、Obsidian 归档三大能力。
+> 本项目是一个上层工作台：搜索能力主要通过 [agent-reach](https://github.com/Panniantong/Agent-Reach) 提供，多平台批量采集主要通过 [MediaCrawler](https://github.com/NanmiCoder/MediaCrawler) 提供；本仓库负责统一入口、转录、降级策略、飞书同步、Obsidian 归档和相关自动化。
+
+**English summary:** An MIT-licensed workflow that combines upstream search/crawling tools with transcription, fallback logic, Feishu sync, and Obsidian ingestion.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
@@ -48,7 +50,7 @@
 ### 一键安装
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/info-collector.git
+git clone https://github.com/sanjin587/info-collector.git
 cd info-collector
 setup.bat          # Windows 一键安装
 # 或手动:
@@ -60,6 +62,12 @@ setup.bat          # Windows 一键安装
 ```bash
 cp .env.example .env
 # 编辑 .env 填入飞书凭证和 API Key（可选，不用飞书可以不填）
+# 可选配置:
+# OBSIDIAN_VAULT_PATH=你的 Obsidian Vault 根目录
+# OBSIDIAN_OUTPUT_DIR=逐字稿直接输出目录（优先级高于 OBSIDIAN_VAULT_PATH）
+#
+# 两者都不配置时，统一流水线会把逐字稿保存到:
+# ./outputs/transcripts/
 ```
 
 ### 安装 MediaCrawler（批量采集引擎，可选）
@@ -108,13 +116,13 @@ info-collector/
 
 ## 核心功能
 
-### 搜索 — 全网实时搜索
+### 搜索 — 通过上游搜索工具接入多平台
 
-跨 15 个平台同时搜索，看讨论、找灵感、读任意网页内容。
+通过 agent-reach 等上游工具接入多平台搜索能力，用于看讨论、找灵感和读取网页内容。
 
-### 采集 — 批量结构化抓取
+### 采集 — 通过上游采集引擎批量结构化抓取
 
-输入关键词或账号链接，批量抓取作品数据和视频文件，支持 7 个平台，自动去重。
+通过 MediaCrawler 及本仓库的桥接脚本进行批量结构化采集、格式转换和后续处理。
 
 ### 转录 — 视频转逐字稿
 
@@ -127,9 +135,9 @@ info-collector/
 
 每条采集数据同时写入飞书多维表格和 Obsidian 知识库。按 URL 自动去重，两边互备。
 
-### 自动化 — 全流程一条命令
+### 自动化 — 统一入口 + 可选上游组件
 
-搜索 → 采集 → 下载视频 → AI 转录 → 飞书入库 → Obsidian 归档，全自动。
+统一入口可完成链接识别、媒体获取、转录、降级和归档；搜索和部分批量采集能力由可选上游组件提供。
 
 ## 使用示例
 
@@ -199,3 +207,7 @@ curl -s "https://r.jina.ai/URL"        # 读任意网页
 ## License
 
 MIT © 2026 三金AI实验室
+
+## Contributing
+
+欢迎提交 Bug、兼容性修复、测试和文档改进。开发约定见 [CONTRIBUTING.md](CONTRIBUTING.md)，安全问题见 [SECURITY.md](SECURITY.md)，AI/Agent 维护规则见 [AGENTS.md](AGENTS.md)。

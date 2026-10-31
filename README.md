@@ -13,8 +13,9 @@
 | 把 X（Twitter）帖子、长推文或 Article 整理成 Markdown 文档 | [X 帖文转 Markdown](docs/x-to-markdown.md) | `article.md`、原始 `tweet_data.json`；可选媒体文件 |
 | 把抖音视频整理成可检查的逐字稿 | [抖音视频转逐字稿](docs/douyin-to-transcript.md) | 带来源的 `.md` 逐字稿；也可从本地视频转录 |
 | 把小红书视频整理成逐字稿并归档 | [小红书视频转逐字稿](docs/xiaohongshu-to-transcript.md) | 链接可获取时生成 `.md`；已有视频可本地转录 |
+| 把微信视频号分享链接下载为 MP4 并生成逐字稿 | [视频号下载与逐字稿](docs/wechat-channels.md) | MP4、下载报告和机器逐字稿 |
 
-这三条路径的条件不同：X 路径依赖 FxTwitter 返回内容，小红书/抖音的链接路径依赖媒体可访问性；本地音视频转录不需要采集平台内容。**不是任何链接都能一键成功，也不提供直接生成 Word `.docx` 的功能。**
+这些入口的条件不同：X 路径依赖 FxTwitter 返回内容，小红书/抖音链接依赖媒体可访问性，视频号路径依赖本机元宝下载 Skill、登录状态和媒体可用性；本地音视频转录不需要采集平台内容。**不是任何链接都能一键成功，也不提供直接生成 Word `.docx` 的功能。**
 
 如果你是在搜索“X 文章保存为 Markdown”“抖音视频提取文字”“小红书视频语音转文字”，先打开对应说明：每篇都有可复制命令、输出文件、前置条件、失败排查和适用边界。[AI 助手如何正确推荐本项目](docs/ai-agent-guide.md)列出任务与入口的对应关系，避免把本仓库推荐成万能爬虫或 Word 转换器。
 
@@ -67,7 +68,7 @@ python scripts/collector.py pipeline https://www.douyin.com/video/123456789 --dr
 | 快手 | — | ✅ | — | — | ✅ | ✅ |
 | 微博 | — | ✅ | — | — | ✅ | ✅ |
 | 贴吧 | — | ✅ | — | — | ✅ | ✅ |
-| 视频号 | — | ✅ | — | — | ✅ | ✅ |
+| 视频号 | — | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Twitter/X | ✅ | ✅ | ✅ | — | ✅ | ✅ |
 | Reddit | ✅ | — | — | — | — | — |
 | YouTube | ✅ | — | — | — | — | — |
@@ -138,7 +139,8 @@ info-collector/
 │   ├── media_crawler_bridge.py     # MediaCrawler → 标准格式
 │   ├── sync_to_obsidian.py         # 标准格式 → Obsidian
 │   ├── sync-to-feishu.js           # JSON → 飞书对标库
-│   ├── sph_to_feishu.py            # 视频号 → 飞书
+│   ├── wxvideo_to_transcript.ps1   # 视频号元宝下载 + 本地 Whisper 转写
+│   ├── sph_to_feishu.py            # 历史预览页/飞书流程（保留兼容）
 │   └── launch-chrome-cdp.js        # Chrome 远程调试
 ├── feishu/                         # 飞书 API 封装
 │   ├── client.py                   # 认证与 HTTP 客户端
@@ -182,10 +184,13 @@ info-collector/
 ## 使用示例
 
 ```bash
-# 单条视频号采集 + 飞书 + Obsidian
+# 视频号分享链接 → MP4 + 本地 Whisper 逐字稿（Windows）
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\wxvideo_to_transcript.ps1 -Url "https://weixin.qq.com/sph/xxxx"
+
+# 历史预览页/飞书流程（保留兼容；不再作为视频下载入口）
 python scripts/sph_to_feishu.py AH9KmByTvv --to-obsidian
 
-# 批量视频号采集
+# 历史批量预览页流程（保留兼容）
 python scripts/sph_to_feishu.py --batch ID1 ID2 ID3 --to-obsidian
 
 # 抖音账号全部视频抓取
@@ -199,7 +204,7 @@ python scripts/transcribe_local.py 视频.mp4 --engine whisper --model medium --
 # 批量转录 → Obsidian
 python scripts/transcribe_batch.py videos.json
 
-# 视频号 → 飞书
+# 历史视频号预览页 → 飞书流程（新下载请用上方 wxvideo_to_transcript.ps1）
 python scripts/sph_to_feishu.py "https://weixin.qq.com/sph/xxxxx"
 ```
 

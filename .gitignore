@@ -65,3 +65,40 @@ douyin_videos*.json
 
 # 软著材料（仅本地保留，不上传）
 软著材料/
+douyin_cookies.txt
+
+# 浏览器登录资料与本机会话状态
+**/browser-profile/
+**/browser_profiles/
+**/chrome-profile/
+**/chrome-user-data/
+**/edge-profile/
+**/user-data-dir/
+**/browser-data/
+**/.browser-data/
+
+# 凭证、Cookie、临时票据和私钥
+.env.*
+!.env.example
+**/*cookie*.txt
+**/*cookie*.json
+**/*token*.txt
+**/*token*.json
+**/credentials*.json
+*.pem
+*.p12
+*.pfx
+*.key
+
+# 下载媒体（downloads/ 目录本身也已排除）
+*.m4a
+*.mov
+*.mkv
+*.webm
+*.aac
+*.flac
+*.ogg
+*.opus
+*.avi
+*.mpg
+*.mpeg

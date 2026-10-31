@@ -4,6 +4,14 @@ All notable changes to this project will be documented here.
 
 The project follows Semantic Versioning for published releases.
 
+## [2.1.0] - 2026-10-31
+
+### Added
+
+- Added a WeChat Channels workflow that invokes the external Yuanbao downloader, validates the downloaded MP4 with `ffprobe`, and creates a local Whisper transcript.
+- Added `docs/wechat-channels.md` with setup, QR-login, output, and troubleshooting guidance; retained the preview-page script as a legacy route.
+- Added ignore rules for browser profiles, downloaded media, and local credentials.
+
 ## [2.0.0] - 2026-09-18
 
 ### Added
